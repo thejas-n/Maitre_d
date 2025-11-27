@@ -37,6 +37,14 @@ def create_blueprint(manager, agent, speech_service):
             print(f"Chat error: {exc}")
             return jsonify({"response": "I had a glitch, could you say that again?"}), 500
 
+        # If a waitlist event, append ETA from manager.get_status()
+        if event and event.get("type") == "waitlist":
+            status = manager.get_status()
+            for entry in status["waitlist"]:
+                if entry["name"] == event["name"] and entry["party_size"] == event["party_size"]:
+                    event["eta_minutes"] = entry.get("eta_minutes")
+                    break
+
         return jsonify(
             {
                 "response": reply,

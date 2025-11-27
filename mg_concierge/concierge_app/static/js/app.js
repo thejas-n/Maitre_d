@@ -114,7 +114,7 @@ const renderWaitlist = (waitlist) => {
     return;
   }
   waitlistList.innerHTML = waitlist
-    .map((entry, index) => `<li>#${index + 1}: ${entry.name} (${entry.party_size} ppl)</li>`)
+    .map((entry, index) => `<li>#${index + 1}: ${entry.name} (${entry.party_size} ppl) ${entry.eta_minutes !== null ? `(ETA: ${entry.eta_minutes} min)` : ''}</li>`)
     .join('');
 };
 

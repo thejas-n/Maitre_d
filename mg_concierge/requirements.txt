@@ -1,0 +1,9 @@
+Flask
+google-generativeai
+google-cloud-texttospeech
+python-dotenv
+
+
+
+
+
