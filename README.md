@@ -22,11 +22,13 @@ A sophisticated AI-powered concierge system for restaurant management, featuring
 - **REST API**: Clean API endpoints for all operations
 - **Web Interface**: Modern responsive UI with real-time updates
 - **Runtime Logs**: Agent and TTS timing logs in `mg_concierge/logs/agent.log` and `mg_concierge/logs/tts.log`
+- **Profiles**: Pluggable concierge profiles (model, voice, avatars) via `CONCIERGE_ID`
 
 ### Current Defaults
 - **Model**: `gemini-2.5-flash` with automatic function calling
 - **TTS**: Google Cloud Text-to-Speech voice `en-IN-Standard-E` (MP3)
 - **Avatar**: Rectangular video panel with rounded edges and glassy “Interact” button
+- **Profile**: `mg_cafe` (see `concierge_app/profiles.py`)
 
 ## 🏗️ Architecture
 
@@ -92,6 +94,7 @@ Create a `.env` file in the project root:
 ```bash
 GOOGLE_API_KEY=your_gemini_api_key_here
 GOOGLE_APPLICATION_CREDENTIALS=path/to/your/service-account-key.json
+CONCIERGE_ID=mg_cafe  # or another profile id
 PORT=5001
 ```
 
@@ -134,6 +137,12 @@ docker run -p 5001:5001 hotel-concierge
 | `/api/chat` | POST | Send message to concierge agent |
 | `/api/tts` | POST | Generate speech from text |
 | `/api/checkout` | POST | Check out guest and assign from waitlist |
+
+## 🧑‍🍳 Creating Additional Concierge Profiles
+
+- Add a new entry to `concierge_app/profiles.py` with a unique `id`, `model`, `tts_voice`, and avatar filenames.
+- Set `CONCIERGE_ID=<your_id>` in `.env` to boot that concierge.
+- Place the avatar video files in `concierge_app/static/media/` matching the filenames you set in the profile.
 
 ## 🎯 Usage
 

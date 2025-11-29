@@ -25,8 +25,9 @@ if not _logger.handlers:
 class SpeechService:
     """Wrapper around Google Cloud Text-to-Speech with timing/logging."""
 
-    def __init__(self) -> None:
+    def __init__(self, default_voice: str = "en-IN-Standard-E") -> None:
         self._client: Optional[texttospeech.TextToSpeechClient] = None
+        self.default_voice = default_voice
 
     def _init_client(self) -> None:
         try:
@@ -44,12 +45,13 @@ class SpeechService:
     def available(self) -> bool:
         return self._ensure_client()
 
-    def synthesize(self, text: str, voice: str = "en-IN-Standard-E") -> Optional[str]:
+    def synthesize(self, text: str, voice: str | None = None) -> Optional[str]:
         if not self._ensure_client():
             return None
 
         try:
             start = time.perf_counter()
+            voice = voice or self.default_voice
             synthesis_input = texttospeech.SynthesisInput(text=text)
             lang_parts = voice.split("-")
             language_code = "-".join(lang_parts[:2]) if len(lang_parts) >= 2 else "en-US"

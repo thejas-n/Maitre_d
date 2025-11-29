@@ -18,6 +18,7 @@ else:
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 GOOGLE_APPLICATION_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 PORT = int(os.getenv("PORT", "5001"))
+CONCIERGE_ID = os.getenv("CONCIERGE_ID", "mg_cafe")
 
 
 class Settings:
@@ -27,6 +28,7 @@ class Settings:
         self.google_api_key = GOOGLE_API_KEY
         self.google_credentials = GOOGLE_APPLICATION_CREDENTIALS
         self.port = PORT
+        self.concierge_id = CONCIERGE_ID
 
         if not self.google_api_key:
             raise RuntimeError(
@@ -35,4 +37,3 @@ class Settings:
 
 
 settings = Settings()
-

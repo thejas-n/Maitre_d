@@ -3,12 +3,12 @@ from __future__ import annotations
 from flask import Blueprint, jsonify, render_template, request
 
 
-def create_blueprint(manager, agent, speech_service):
+def create_blueprint(manager, agent, speech_service, profile):
     bp = Blueprint("concierge", __name__)
 
     @bp.route("/")
     def index():
-        return render_template("index.html")
+        return render_template("index.html", profile=profile)
 
     @bp.route("/api/status")
     def status():
@@ -67,4 +67,3 @@ def create_blueprint(manager, agent, speech_service):
         return jsonify({"audio": audio})
 
     return bp
-

@@ -8,6 +8,7 @@ from typing import Callable, List, Optional, Tuple, Dict, Any
 import google.generativeai as genai
 
 from .config import settings
+from .profiles import ConciergeProfile
 
 LOG_DIR = Path(__file__).resolve().parent.parent / "logs"
 LOG_DIR.mkdir(parents=True, exist_ok=True)
@@ -23,8 +24,9 @@ if not _logger.handlers:
 class ConciergeAgent:
     """Thin wrapper around the Gemini model with function-calling tools."""
 
-    def __init__(self, manager) -> None:
+    def __init__(self, manager, profile: ConciergeProfile) -> None:
         self.manager = manager
+        self.profile = profile
         self.model: Optional[genai.GenerativeModel] = None
         self.chat_session = None
 
@@ -70,7 +72,12 @@ class ConciergeAgent:
         genai.configure(api_key=settings.google_api_key)
         tools = self._build_tools()
 
-        for model_name in ("gemini-2.5-flash", "gemini-1.5-flash-latest", "gemini-1.5-flash"):
+        preferred = self.profile.model or "gemini-2.5-flash"
+        tried = set()
+        for model_name in (preferred, "gemini-1.5-flash-latest", "gemini-1.5-flash"):
+            if model_name in tried:
+                continue
+            tried.add(model_name)
             try:
                 self.model = genai.GenerativeModel(model_name=model_name, tools=tools)
                 self.chat_session = self.model.start_chat(enable_automatic_function_calling=True)
