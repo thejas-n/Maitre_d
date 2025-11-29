@@ -1,10 +1,23 @@
 from __future__ import annotations
 
+import logging
+import time
+from pathlib import Path
 from typing import Callable, List, Optional, Tuple, Dict, Any
 
 import google.generativeai as genai
 
 from .config import settings
+
+LOG_DIR = Path(__file__).resolve().parent.parent / "logs"
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+_logger = logging.getLogger("concierge.agent")
+if not _logger.handlers:
+    handler = logging.FileHandler(LOG_DIR / "agent.log")
+    formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
+    handler.setFormatter(formatter)
+    _logger.addHandler(handler)
+    _logger.setLevel(logging.INFO)
 
 
 class ConciergeAgent:
@@ -14,7 +27,6 @@ class ConciergeAgent:
         self.manager = manager
         self.model: Optional[genai.GenerativeModel] = None
         self.chat_session = None
-        self._init_model()
 
     # --------------------------------------------------------------------- tools
     def _build_tools(self) -> List[Callable]:
@@ -58,7 +70,7 @@ class ConciergeAgent:
         genai.configure(api_key=settings.google_api_key)
         tools = self._build_tools()
 
-        for model_name in ("gemini-2.0-flash-exp", "gemini-1.5-flash-latest", "gemini-1.5-flash"):
+        for model_name in ("gemini-2.5-flash", "gemini-1.5-flash-latest", "gemini-1.5-flash"):
             try:
                 self.model = genai.GenerativeModel(model_name=model_name, tools=tools)
                 self.chat_session = self.model.start_chat(enable_automatic_function_calling=True)
@@ -86,7 +98,15 @@ class ConciergeAgent:
     def respond(self, message: str) -> Tuple[str, Optional[Dict[str, Any]]]:
         if not self.chat_session:
             self._init_model()
+        start = time.perf_counter()
         response = self.chat_session.send_message(message)
+        elapsed_ms = (time.perf_counter() - start) * 1000
+        _logger.info(
+            "model=%s chars=%d duration_ms=%.1f",
+            getattr(self.model, "model_name", "unknown"),
+            len(message or ""),
+            elapsed_ms,
+        )
+        _logger.debug("user=%r reply=%r", message, response.text)
         event = self.manager.consume_event()
         return response.text, event
-

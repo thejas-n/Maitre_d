@@ -21,6 +21,12 @@ A sophisticated AI-powered concierge system for restaurant management, featuring
 - **Session Management**: Persistent conversation state across interactions
 - **REST API**: Clean API endpoints for all operations
 - **Web Interface**: Modern responsive UI with real-time updates
+- **Runtime Logs**: Agent and TTS timing logs in `mg_concierge/logs/agent.log` and `mg_concierge/logs/tts.log`
+
+### Current Defaults
+- **Model**: `gemini-2.5-flash` with automatic function calling
+- **TTS**: Google Cloud Text-to-Speech voice `en-IN-Standard-E` (MP3)
+- **Avatar**: Rectangular video panel with rounded edges and glassy “Interact” button
 
 ## 🏗️ Architecture
 
