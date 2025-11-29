@@ -141,21 +141,21 @@
       <div class="avatar-container">
         <video
           id="vid-idle"
-          src="{{ url_for('static', filename='media/' + (profile.avatars.idle if profile else 'avatar-idle.mp4')) }}"
+          src="{{ url_for('static', filename='media/' + ((profile.id + '/' + profile.avatars.idle) if profile else 'avatar-idle.mp4')) }}"
           loop
           muted
           playsinline
         ></video>
         <video
           id="vid-listening"
-          src="{{ url_for('static', filename='media/' + (profile.avatars.listening if profile else 'avatar-listening.mp4')) }}"
+          src="{{ url_for('static', filename='media/' + ((profile.id + '/' + profile.avatars.listening) if profile else 'avatar-listening.mp4')) }}"
           loop
           muted
           playsinline
         ></video>
         <video
           id="vid-speaking"
-          src="{{ url_for('static', filename='media/' + (profile.avatars.speaking if profile else 'avatar-speaking.mp4')) }}"
+          src="{{ url_for('static', filename='media/' + ((profile.id + '/' + profile.avatars.speaking) if profile else 'avatar-speaking.mp4')) }}"
           loop
           muted
           playsinline

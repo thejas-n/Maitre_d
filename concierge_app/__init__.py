@@ -6,7 +6,7 @@ from flask import Flask
 
 from .agent import ConciergeAgent
 from .config import settings
-from .hotel import HotelManager
+from services.hotel import HotelManager
 from .profiles import get_profile
 from .routes import create_blueprint
 from .tts import SpeechService

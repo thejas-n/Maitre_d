@@ -21,35 +21,40 @@ A sophisticated AI-powered concierge system for restaurant management, featuring
 - **Session Management**: Persistent conversation state across interactions
 - **REST API**: Clean API endpoints for all operations
 - **Web Interface**: Modern responsive UI with real-time updates
-- **Runtime Logs**: Agent and TTS timing logs in `mg_concierge/logs/agent.log` and `mg_concierge/logs/tts.log`
-- **Profiles**: Pluggable concierge profiles (model, voice, avatars) via `CONCIERGE_ID`
+- **Runtime Logs**: Agent and TTS timing logs in `logs/agent.log` and `logs/tts.log`
+- **Profiles**: Pluggable concierge profiles (model, voice, avatars, prompt) via `CONCIERGE_ID`
 
 ### Current Defaults
 - **Model**: `gemini-2.5-flash` with automatic function calling
 - **TTS**: Google Cloud Text-to-Speech voice `en-IN-Standard-E` (MP3)
 - **Avatar**: Rectangular video panel with rounded edges and glassy “Interact” button
-- **Profile**: `mg_cafe` (see `concierge_app/profiles.py`)
+- **Profile**: `test_concierge` (see `concierge_app/profiles.py`)
+  - Avatars resolve from `concierge_app/static/media/<profile_id>/...`
 
 ## 🏗️ Architecture
 
 ```
-mg_concierge/
-├── app.py                 # Flask application entry point
+.
+├── app.py                     # Flask application entry point
 ├── concierge_app/
-│   ├── __init__.py        # Flask app factory
-│   ├── agent.py          # Gemini-powered concierge agent
-│   ├── hotel.py          # Restaurant state management
-│   ├── routes.py         # API endpoints
-│   ├── tts.py            # Text-to-speech service
-│   ├── config.py         # Configuration management
+│   ├── __init__.py            # Flask app factory
+│   ├── agent.py               # Gemini-powered concierge agent
+│   ├── profiles.py            # Concierge profiles (model/voice/prompt/assets)
+│   ├── routes.py              # API endpoints
+│   ├── tts.py                 # Text-to-speech service
+│   ├── config.py              # Configuration management
 │   ├── static/
-│   │   ├── js/app.js     # Frontend JavaScript
-│   │   └── media/        # Avatar videos
+│   │   ├── js/app.js          # Frontend JavaScript
+│   │   └── media/
+│   │       └── test_concierge/ # Avatar videos for this concierge
 │   └── templates/
-│       └── index.html    # Main UI
-├── venv/                 # Python virtual environment
-├── requirements.txt      # Python dependencies
-└── .env                  # Environment variables
+│       └── index.html         # Main UI
+├── services/
+│   └── hotel.py               # Restaurant state management
+├── logs/                      # Runtime logs (agent/tts)
+├── venv/                      # Python virtual environment
+├── requirements.txt           # Python dependencies
+└── .env                       # Environment variables
 ```
 
 ## 🛠️ Setup & Installation
@@ -94,7 +99,7 @@ Create a `.env` file in the project root:
 ```bash
 GOOGLE_API_KEY=your_gemini_api_key_here
 GOOGLE_APPLICATION_CREDENTIALS=path/to/your/service-account-key.json
-CONCIERGE_ID=mg_cafe  # or another profile id
+CONCIERGE_ID=test_concierge  # or another profile id
 PORT=5001
 ```
 
@@ -140,9 +145,9 @@ docker run -p 5001:5001 hotel-concierge
 
 ## 🧑‍🍳 Creating Additional Concierge Profiles
 
-- Add a new entry to `concierge_app/profiles.py` with a unique `id`, `model`, `tts_voice`, and avatar filenames.
+- Add a new entry to `concierge_app/profiles.py` with a unique `id`, `model`, `tts_voice`, `prompt`, and avatar filenames.
 - Set `CONCIERGE_ID=<your_id>` in `.env` to boot that concierge.
-- Place the avatar video files in `concierge_app/static/media/` matching the filenames you set in the profile.
+- Place the avatar video files in `concierge_app/static/media/<profile_id>/` matching the filenames you set in the profile.
 
 ## 🎯 Usage
 

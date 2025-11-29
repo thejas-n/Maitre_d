@@ -18,7 +18,7 @@ else:
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 GOOGLE_APPLICATION_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 PORT = int(os.getenv("PORT", "5001"))
-CONCIERGE_ID = os.getenv("CONCIERGE_ID", "mg_cafe")
+CONCIERGE_ID = os.getenv("CONCIERGE_ID", "test_concierge")
 
 
 class Settings:

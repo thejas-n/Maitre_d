@@ -81,20 +81,7 @@ class ConciergeAgent:
             try:
                 self.model = genai.GenerativeModel(model_name=model_name, tools=tools)
                 self.chat_session = self.model.start_chat(enable_automatic_function_calling=True)
-                self.chat_session.send_message(
-                    """
-                    You are the Concierge at MG Cafe. Follow this protocol:
-                    1. Greet the guest warmly.
-                    2. Ask for their name and party size. Ensure you have the guest's name before proceeding with check-in or waitlist.
-                    3. Use check_availability_tool to check if a table is available for their party size.
-                    4. If a table is available: Use add_guest_tool with action='check_in' to assign the table.
-                    5. If NO table is available: Use add_guest_tool with action='waitlist' to add them to the waitlist. Always add guests to waitlist when no tables are available - do not just tell them there are no tables. When a guest is added to the waitlist, **you MUST inform them of their position and the EXACT estimated wait time as provided by the tool.**
-                    6. After assigning a table or adding to waitlist, confirm the action politely and end the interaction.
-                    7. Keep responses brief, friendly, and speak as the on-screen avatar.
-                    
-                    IMPORTANT: When no tables are available, you MUST call add_guest_tool with action='waitlist' to add the guest to the waitlist. If the name is not provided, you MUST ask for it before calling add_guest_tool. Never just say "no tables available" without adding them to the waitlist. When providing waitlist information, **you MUST use the estimated wait time in minutes returned by the tool, do not invent or approximate times.**
-                    """
-                )
+                self.chat_session.send_message(self.profile.prompt.strip() or "You are the concierge.")
                 return
             except Exception as exc:  # pragma: no cover - best effort
                 print(f"Failed to init {model_name}: {exc}")
