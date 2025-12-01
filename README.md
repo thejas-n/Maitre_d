@@ -1,6 +1,6 @@
-# MG Cafe Concierge Agent 🤖
+# Concierge Agent Platform 🤖
 
-A sophisticated AI-powered concierge system for restaurant management, featuring a conversational agent that handles table reservations, waitlist management, and guest interactions through both voice and text interfaces.
+An AI-powered concierge platform for restaurants and similar venues. It supports multiple concierge profiles (e.g., MG Cafe, Amber, Maya) with per-venue knowledge, avatars, and voices. The agent handles table reservations/waitlists and guest interactions via voice and text.
 
 ## 🚀 Features
 
@@ -10,7 +10,7 @@ A sophisticated AI-powered concierge system for restaurant management, featuring
 - **Voice Interaction**: Real-time speech-to-text recognition and text-to-speech synthesis
 - **Multi-modal Avatar**: Dynamic video avatar that responds to conversation states (idle, listening, speaking)
 
-### Restaurant Management
+### Venue Operations
 - **Table Management**: Real-time tracking of table availability across different seating types
 - **Waitlist System**: Automatic waitlist management with FIFO assignment
 - **Guest Services**: Seamless check-in and checkout processes
@@ -30,8 +30,7 @@ A sophisticated AI-powered concierge system for restaurant management, featuring
 - **Model**: `gemini-2.5-flash` with automatic function calling
 - **TTS**: Google Cloud Text-to-Speech voice `en-IN-Standard-E` (MP3)
 - **Avatar**: Rectangular video panel with rounded edges and glassy “Interact” button
-- **Profile**: `test_concierge` (see `concierge_app/profiles.py`)
-  - Avatars resolve from `concierge_app/static/media/<profile_id>/...`
+- **Profile**: Configurable via `CONCIERGE_ID` (see `concierge_app/profiles.py`); avatars resolve from `concierge_app/static/media/<profile_id>/...`
 
 ## 🏗️ Architecture
 
@@ -76,12 +75,12 @@ cd hotel_concierge
 ### 2. Environment Setup
 ```bash
 # Create virtual environment
-python -m venv mg_concierge/venv
+python -m venv venv
 
 # Activate virtual environment
-source mg_concierge/venv/bin/activate  # Linux/Mac
+source venv/bin/activate  # Linux/Mac
 # or
-mg_concierge\venv\Scripts\activate     # Windows
+venv\Scripts\activate     # Windows
 
 # Install dependencies
 pip install -r requirements.txt
@@ -106,7 +105,7 @@ PORT=5001
 ```
 
 ### 4. Avatar Videos Setup
-Place the following video files in `mg_concierge/concierge_app/static/media/`:
+Place avatar videos under `concierge_app/static/media/<profile_id>/` matching the filenames in the profile:
 - `avatar-idle.mp4` - Avatar in idle state
 - `avatar-listening.mp4` - Avatar when listening to guest
 - `avatar-speaking.mp4` - Avatar when speaking to guest
@@ -116,7 +115,6 @@ Place the following video files in `mg_concierge/concierge_app/static/media/`:
 ### Development Mode
 ```bash
 # From project root
-cd mg_concierge
 source venv/bin/activate
 python app.py
 ```
