@@ -23,6 +23,8 @@ A sophisticated AI-powered concierge system for restaurant management, featuring
 - **Web Interface**: Modern responsive UI with real-time updates
 - **Runtime Logs**: Agent and TTS timing logs in `logs/agent.log` and `logs/tts.log`
 - **Profiles**: Pluggable concierge profiles (model, voice, avatars, prompt) via `CONCIERGE_ID`
+- **Knowledge Packs**: Per-concierge knowledge files under `concierge_app/knowledge/` (e.g., `mg_cafe.md`)
+- **Observability**: Request logging + Prometheus metrics (`/metrics`)
 
 ### Current Defaults
 - **Model**: `gemini-2.5-flash` with automatic function calling
@@ -37,21 +39,21 @@ A sophisticated AI-powered concierge system for restaurant management, featuring
 .
 ├── app.py                     # Flask application entry point
 ├── concierge_app/
-│   ├── __init__.py            # Flask app factory
+│   ├── __init__.py            # Flask app factory + observability hooks
 │   ├── agent.py               # Gemini-powered concierge agent
-│   ├── profiles.py            # Concierge profiles (model/voice/prompt/assets)
+│   ├── profiles.py            # Concierge profiles (model/voice/prompt/assets/knowledge)
+│   ├── knowledge/             # Per-venue knowledge packs (e.g., mg_cafe.md)
 │   ├── routes.py              # API endpoints
 │   ├── tts.py                 # Text-to-speech service
 │   ├── config.py              # Configuration management
 │   ├── static/
 │   │   ├── js/app.js          # Frontend JavaScript
-│   │   └── media/
-│   │       └── test_concierge/ # Avatar videos for this concierge
+│   │   └── media/             # Avatar videos under each profile id (e.g., amber/, maya/)
 │   └── templates/
 │       └── index.html         # Main UI
 ├── services/
 │   └── hotel.py               # Restaurant state management
-├── logs/                      # Runtime logs (agent/tts)
+├── logs/                      # Runtime logs (agent/tts/requests)
 ├── venv/                      # Python virtual environment
 ├── requirements.txt           # Python dependencies
 └── .env                       # Environment variables
@@ -99,7 +101,7 @@ Create a `.env` file in the project root:
 ```bash
 GOOGLE_API_KEY=your_gemini_api_key_here
 GOOGLE_APPLICATION_CREDENTIALS=path/to/your/service-account-key.json
-CONCIERGE_ID=test_concierge  # or another profile id
+CONCIERGE_ID=amber  # or another profile id
 PORT=5001
 ```
 
@@ -145,9 +147,16 @@ docker run -p 5001:5001 hotel-concierge
 
 ## 🧑‍🍳 Creating Additional Concierge Profiles
 
-- Add a new entry to `concierge_app/profiles.py` with a unique `id`, `model`, `tts_voice`, `prompt`, and avatar filenames.
+- Add a new entry to `concierge_app/profiles.py` with a unique `id`, `model`, `tts_voice`, `prompt`, `avatars`, and knowledge file reference (drop the knowledge file under `concierge_app/knowledge/`).
 - Set `CONCIERGE_ID=<your_id>` in `.env` to boot that concierge.
-- Place the avatar video files in `concierge_app/static/media/<profile_id>/` matching the filenames you set in the profile.
+- Place avatar video files in `concierge_app/static/media/<profile_id>/` matching the filenames you set in the profile.
+- Restart the app to load the new profile.
+
+## 📈 Observability
+- Request logging: `logs/requests.log` (method/path/status/duration_ms, X-Request-ID header).
+- Metrics: Prometheus endpoint at `/metrics` (request counters/histograms).
+- Agent log: `logs/agent.log` for Gemini response timings.
+- TTS log: `logs/tts.log` for synthesis timings and sizes.
 
 ## 🎯 Usage
 

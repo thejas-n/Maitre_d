@@ -60,9 +60,11 @@
         transform: translateY(-2px);
       }
       .avatar-container {
-        width: 92%;
-        max-width: 960px;
+        width: auto;
+        max-width: 92vw;
+        aspect-ratio: 9 / 16;
         height: calc(100vh - 160px);
+        max-height: calc(100vh - 160px);
         position: relative;
         border-radius: 28px;
         overflow: hidden;
@@ -73,9 +75,9 @@
       video {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
         display: none;
-      }
+        }
       video.active {
         display: block;
       }
